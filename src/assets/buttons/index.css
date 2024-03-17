@@ -1,0 +1,23 @@
+.btn-default-size {
+  height: 40px;
+  width: 120px;
+  border-radius: 7px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: all 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  user-select: none;
+  border: #ccc solid 2px;
+}
+.btn-standard {
+  background-color: var(--bg-color);
+  color: var(--primary-color);
+}
+.btn-standard:hover {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  border: none;
+}

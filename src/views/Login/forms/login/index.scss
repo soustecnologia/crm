@@ -1,0 +1,22 @@
+.login-form {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+
+  .button {
+    display: flex;
+    justify-content: end;
+  }
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    margin-top: 15px;
+    color: var(--text-dark);
+
+    .action {
+      cursor: pointer;
+      user-select: none;
+    }
+  }
+}

@@ -6,7 +6,6 @@ import { Dropdown } from "antd";
 import routesApp from "../../routes/routes";
 import "./index.scss";
 import MenuProfile from "./components/MenuProfile";
-import Search from "./components/Search";
 import Notifications from "./components/Notifications";
 
 const Header = () => {
@@ -71,7 +70,6 @@ const Header = () => {
           })}
         </div>
         <div className="actions">
-          <Search />
           <Notifications />
           <MenuProfile />
         </div>

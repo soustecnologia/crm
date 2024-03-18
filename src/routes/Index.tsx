@@ -18,7 +18,7 @@ const PrivateRoutes = () => {
     <div style={{ display: "flex", flexDirection: "column" }}>
       <Header />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/dashboard" element={<Home />} />
         <Route path="/deals" element={<Deals />} />
         <Route path="/register">
           <Route path="company" element={<RegisterCompany />} />

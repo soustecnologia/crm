@@ -22,3 +22,7 @@
 body {
   background-color: var(--bg-color);
 }
+
+a {
+  text-decoration: none;
+}

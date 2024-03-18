@@ -1,0 +1,32 @@
+.main-menu-profile {
+  width: 210px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+  font-weight: 700;
+  padding: 0 16px;
+  user-select: none;
+
+  .avatar {
+    cursor: default;
+  }
+  .name {
+    width: calc(100% - 50px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  .name span {
+    width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+.item-menu-profile {
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}

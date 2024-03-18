@@ -8,8 +8,8 @@ import { LoginServiceImpl } from "../../services/login";
 import { StorageServiceImpl } from "../../../../services/storage";
 
 const FormLogin = () => {
+  localStorage.clear();
   const navigate = useNavigate();
-
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
   const auth = new LoginServiceImpl();
@@ -25,7 +25,7 @@ const FormLogin = () => {
         const setedToken = storage.setData("token", token);
         if (setedUser && setedToken) {
           messageApi.success("Bom trabalho 😄");
-          navigate("/");
+          navigate("/dashboard");
         } else {
           messageApi.error("Erro ao efetuar Login 🥺");
         }

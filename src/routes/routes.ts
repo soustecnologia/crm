@@ -15,8 +15,8 @@ const routesApp = [
     name: "Cadastros",
     children: [
       {
-        name: "Empresas",
-        path: "/register/company",
+        name: "Departamentos",
+        path: "/register/departments",
       },
       {
         name: "Funcionários",
@@ -25,6 +25,10 @@ const routesApp = [
       {
         name: "Ecommerce",
         path: "/register/ecommerce",
+      },
+      {
+        name: "Categorias",
+        path: "/register/categorys",
       },
     ],
   },

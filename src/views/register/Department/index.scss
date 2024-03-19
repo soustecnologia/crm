@@ -1,0 +1,81 @@
+.actions {
+  .filters-actions {
+    height: 60px;
+    padding: 10px 0;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--bg-color);
+    position: relative;
+    z-index: 10;
+
+    .filter {
+      .icon {
+        font-size: 20px;
+        color: var(--icon-color);
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.5s;
+      }
+      .icon:hover {
+        color: var(--text-dark);
+      }
+    }
+  }
+  .action-itens-selected {
+    height: 0px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    font-weight: 700;
+    box-shadow: 0 0 4px #ccc;
+    border-radius: 10px;
+    transform: translateY(-60px);
+    transition: all 0.5s ease;
+
+    .qtd {
+      cursor: default;
+      user-select: none;
+    }
+    .btns {
+      display: flex;
+      gap: 15px;
+      letter-spacing: 0.5px;
+
+      .export,
+      .inactiv {
+        cursor: pointer;
+        padding: 5px 10px;
+        border-radius: 5px;
+        transition: all 0.5s ease;
+      }
+
+      .export:hover,
+      .inactiv:hover {
+        background-color: #0274ad;
+      }
+    }
+  }
+  .action-itens-selected.active {
+    height: 60px;
+    padding: 10px;
+    transform: translateY(0);
+    margin-bottom: 15px;
+  }
+}
+.table-departments {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+
+  .pagination-table {
+    padding: 25px;
+    background-color: #ffffff;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+}

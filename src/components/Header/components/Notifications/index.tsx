@@ -23,7 +23,7 @@ const Notifications = () => {
       >
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>
-            <span className="title-notification"> Notificações</span>
+            <span className="title-offcanvas"> Notificações</span>
           </Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>

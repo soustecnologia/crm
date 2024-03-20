@@ -24,9 +24,9 @@ export class HttpRequestsDepartmentImpl implements HttpRequestsDepartment {
 
   async findAllWithFilters(filters: Filters): Promise<QueryResponse> {
     try {
-      filters.companyId = this.user.companyId;
+      const query = { ...filters, companyId: this.user.companyId };
       const response = await this.http.get("/registrations/department", {
-        params: filters,
+        params: query,
       });
       return response.data;
     } catch (error) {

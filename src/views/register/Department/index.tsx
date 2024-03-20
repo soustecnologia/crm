@@ -10,11 +10,16 @@ import { FcInfo } from "react-icons/fc";
 import { useEffect, useState } from "react";
 import { Department, QueryResponse } from "./types";
 import { HttpRequestsDepartmentImpl } from "./services/http.request";
+import FiltersDepartment from "./components/filters";
+import NewDepartment from "./components/newDepartment";
 
 const Department = () => {
   const httpRequest = new HttpRequestsDepartmentImpl();
   const [messageApi, contextHolder] = message.useMessage();
   const [rowSelected, setRowSelected] = useState<string[]>([]);
+  const [filters, setFilters] = useState<any>({});
+  const [showFilters, setShowFilters] = useState(false);
+  const [showNewDepartment, setShowNewDepartment] = useState(false);
   const [dataSource, setDataSource] = useState<QueryResponse>({
     departments: [],
     meta: {
@@ -94,12 +99,17 @@ const Department = () => {
   };
 
   const getDepartments = async () => {
-    const filters = {
+    const pagination = {
       page: dataSource.meta.page,
       perPage: dataSource.meta.perPage,
     };
+    const query = {
+      ...filters,
+      ...pagination,
+    };
+
     await httpRequest
-      .findAllWithFilters(filters)
+      .findAllWithFilters(query)
       .then((res) => {
         setDataSource(res);
       })
@@ -109,24 +119,44 @@ const Department = () => {
       });
   };
 
+  const handleFilters = () => {
+    setShowFilters(!showFilters);
+  };
+
+  const handleNewDepartment = () => {
+    setShowNewDepartment(!showNewDepartment);
+  };
+
   useEffect(() => {
     getDepartments();
   }, []);
   return (
     <>
       {contextHolder}
+      <FiltersDepartment
+        show={showFilters}
+        handleClose={handleFilters}
+        setFilters={setFilters}
+      />
+      <NewDepartment
+        show={showNewDepartment}
+        handleClose={handleNewDepartment}
+      />
       <Container style={{ position: "relative" }} fluid="lg">
         <div className="actions">
           <div className="filters-actions">
             <div className="filter">
               <Tooltip title="Filtros" color={"var(--primary-color)"}>
-                <Badge count={rowSelected.length} size="small">
-                  <FaFilter className="icon" />
+                <Badge count={Object.keys(filters).length} size="small">
+                  <FaFilter className="icon" onClick={handleFilters} />
                 </Badge>
               </Tooltip>
             </div>
             <div className="actions">
-              <button className="btn-default-size btn-standard">
+              <button
+                className="btn-default-size btn-standard"
+                onClick={handleNewDepartment}
+              >
                 Criar novo
               </button>
             </div>

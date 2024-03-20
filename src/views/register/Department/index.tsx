@@ -1,22 +1,29 @@
-import { Badge, Pagination, Table, Tooltip } from "antd";
+import { Badge, Pagination, Table, Tooltip, message } from "antd";
 import { Container } from "react-bootstrap";
+import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
+import { TbInfoSquareRoundedFilled } from "react-icons/tb";
 import "./index.scss";
 
 // Icones
 import { FaFilter } from "react-icons/fa";
 import { FcInfo } from "react-icons/fc";
-import { useState } from "react";
-
-interface DataType {
-  id: string;
-  companyId: string;
-  name: string;
-  employees: number;
-  status: string;
-}
+import { useEffect, useState } from "react";
+import { Department, QueryResponse } from "./types";
+import { HttpRequestsDepartmentImpl } from "./services/http.request";
 
 const Department = () => {
+  const httpRequest = new HttpRequestsDepartmentImpl();
+  const [messageApi, contextHolder] = message.useMessage();
   const [rowSelected, setRowSelected] = useState<string[]>([]);
+  const [dataSource, setDataSource] = useState<QueryResponse>({
+    departments: [],
+    meta: {
+      page: 1,
+      perPage: 10,
+      total: 0,
+      totalPages: 1,
+    },
+  });
 
   const columns = [
     {
@@ -26,6 +33,22 @@ const Department = () => {
     {
       title: "Funcionários",
       dataIndex: "employees",
+      render: (employees: any[]) => (
+        <span>{employees?.length > 0 ? employees?.length : 0}</span>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (status: string) => (
+        <span>
+          {status === "A" ? (
+            <AiOutlineCheckCircle style={{ color: "green" }} />
+          ) : (
+            <AiOutlineCloseCircle style={{ color: "red" }} />
+          )}
+        </span>
+      ),
     },
     {
       title: "",
@@ -42,29 +65,20 @@ const Department = () => {
     },
   ];
 
-  const data: DataType[] = [];
-  for (let i = 0; i < 100; i++) {
-    data.push({
-      id: `id-${i}`,
-      companyId: `id-${i}`,
-      name: `Departamento ${i}`,
-      employees: Math.floor(Math.random() * 20),
-      status: "A",
-    });
-  }
-
   const rowSelection = {
-    onChange: (_: React.Key[], selectedRows: DataType[]) => {
+    onChange: (_: React.Key[], selectedRows: Department[]) => {
       setRowSelected([]);
       setRowSelected([...selectedRows.map((row) => row.id)]);
     },
-    getCheckboxProps: (record: DataType) => ({
+    getCheckboxProps: (record: Department) => ({
       name: record.name,
     }),
   };
 
-  const onChange = (event: any) => {
-    console.log(event);
+  const onChangePagination = async (page: number, pageSize: number) => {
+    dataSource.meta.page = page;
+    dataSource.meta.perPage = pageSize;
+    await getDepartments();
   };
 
   const aboutDepartment = (record: any) => {
@@ -78,8 +92,29 @@ const Department = () => {
       return `${qtd} Selecionado`;
     }
   };
+
+  const getDepartments = async () => {
+    const filters = {
+      page: dataSource.meta.page,
+      perPage: dataSource.meta.perPage,
+    };
+    await httpRequest
+      .findAllWithFilters(filters)
+      .then((res) => {
+        setDataSource(res);
+      })
+      .catch((reason) => {
+        messageApi.error("Erro ao buscar os departamentos 🥺");
+        console.error(reason);
+      });
+  };
+
+  useEffect(() => {
+    getDepartments();
+  }, []);
   return (
     <>
+      {contextHolder}
       <Container style={{ position: "relative" }} fluid="lg">
         <div className="actions">
           <div className="filters-actions">
@@ -104,16 +139,18 @@ const Department = () => {
             <span className="qtd">{qtdSelectedMsg(rowSelected.length)}</span>
             <div className="btns">
               <Tooltip
-                title="Exportar contatos selecionados"
+                title="Excluir departamentos selecionados"
                 color={"var(--primary-color)"}
               >
-                <span className="export">Exportar</span>
+                <span className="inactiv">Excluir</span>
               </Tooltip>
               <Tooltip
-                title="Inativar contatos selecionados"
+                title="Só é possível excluir o departamento se não houver nenhum funcionário cadastrado no mesmo."
                 color={"var(--primary-color)"}
               >
-                <span className="inactiv">Inativar</span>
+                <TbInfoSquareRoundedFilled
+                  style={{ cursor: "pointer", fontSize: "20px" }}
+                />
               </Tooltip>
             </div>
           </div>
@@ -126,16 +163,21 @@ const Department = () => {
             }}
             rowKey={(row) => row.id}
             columns={columns}
-            dataSource={data}
-            pagination={{ position: ["none", "none"] }}
+            dataSource={dataSource.departments}
+            pagination={{
+              position: ["none", "none"],
+              pageSize: dataSource.meta.perPage,
+            }}
           />
           <Pagination
             className="pagination-table"
-            total={data.length}
+            total={dataSource.meta.total}
+            pageSize={dataSource.meta.perPage}
+            current={dataSource.meta.page}
             showSizeChanger
             showQuickJumper
-            onChange={onChange}
-            showTotal={(total) => `Total ${total} items`}
+            onChange={onChangePagination}
+            showTotal={(total) => `Total de ${total} itens`}
           />
         </div>
       </Container>

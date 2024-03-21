@@ -25,6 +25,14 @@ export class StorageServiceImpl implements StorageService {
       return false;
     }
   }
+  deleteData(key: string) {
+    try {
+      localStorage.removeItem(key);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
 }
 function encrypt(text: string) {
   return CryptoJS.AES.encrypt(text, env.keyEncripy).toString();

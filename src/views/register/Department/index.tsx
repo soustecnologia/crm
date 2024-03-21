@@ -12,8 +12,10 @@ import { Department, QueryResponse } from "./types";
 import { HttpRequestsDepartmentImpl } from "./services/http.request";
 import FiltersDepartment from "./components/filters";
 import NewDepartment from "./components/newDepartment";
+import { StorageServiceImpl } from "../../../services/storage";
 
 const Department = () => {
+  const storage = new StorageServiceImpl();
   const httpRequest = new HttpRequestsDepartmentImpl();
   const [messageApi, contextHolder] = message.useMessage();
   const [rowSelected, setRowSelected] = useState<string[]>([]);
@@ -83,7 +85,7 @@ const Department = () => {
   const onChangePagination = async (page: number, pageSize: number) => {
     dataSource.meta.page = page;
     dataSource.meta.perPage = pageSize;
-    await getDepartments();
+    await getDepartments(filters);
   };
 
   const aboutDepartment = (record: any) => {
@@ -98,9 +100,12 @@ const Department = () => {
     }
   };
 
-  const getDepartments = async () => {
+  const getDepartments = async (
+    filters: { name: string; status: string },
+    resetPage: boolean = false
+  ) => {
     const pagination = {
-      page: dataSource.meta.page,
+      page: resetPage ? 1 : dataSource.meta.page,
       perPage: dataSource.meta.perPage,
     };
     const query = {
@@ -127,8 +132,27 @@ const Department = () => {
     setShowNewDepartment(!showNewDepartment);
   };
 
+  const applyFilters = (applyFilter: { status: string; name: string }) => {
+    if (Object.entries(applyFilter).length === 0) {
+      storage.deleteData("filters_department");
+      setFilters({});
+    } else {
+      storage.setData("filters_department", applyFilter);
+      setFilters(applyFilter);
+    }
+    handleFilters();
+    getDepartments(applyFilter, true);
+  };
+
   useEffect(() => {
-    getDepartments();
+    const contain_filters = storage.getData("filters_department");
+    if (contain_filters) {
+      setFilters(contain_filters);
+      getDepartments(contain_filters, true);
+    } else {
+      setFilters({});
+      getDepartments(filters, true);
+    }
   }, []);
   return (
     <>
@@ -136,7 +160,8 @@ const Department = () => {
       <FiltersDepartment
         show={showFilters}
         handleClose={handleFilters}
-        setFilters={setFilters}
+        applyFilters={applyFilters}
+        preFilters={filters}
       />
       <NewDepartment
         show={showNewDepartment}
@@ -169,17 +194,23 @@ const Department = () => {
             <span className="qtd">{qtdSelectedMsg(rowSelected.length)}</span>
             <div className="btns">
               <Tooltip
+                title="Inativar departamentos selecionados"
+                color={"var(--primary-color)"}
+              >
+                <span className="button-action">Inativar</span>
+              </Tooltip>
+              <Tooltip
                 title="Excluir departamentos selecionados"
                 color={"var(--primary-color)"}
               >
-                <span className="inactiv">Excluir</span>
+                <span className="button-action">Excluir</span>
               </Tooltip>
               <Tooltip
                 title="Só é possível excluir o departamento se não houver nenhum funcionário cadastrado no mesmo."
                 color={"var(--primary-color)"}
               >
                 <TbInfoSquareRoundedFilled
-                  style={{ cursor: "pointer", fontSize: "20px" }}
+                  style={{ cursor: "help", fontSize: "17px" }}
                 />
               </Tooltip>
             </div>

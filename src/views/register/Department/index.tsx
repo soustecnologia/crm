@@ -1,20 +1,23 @@
+import { useEffect, useState } from "react";
 import { Badge, Pagination, Table, Tooltip, message } from "antd";
 import { Container } from "react-bootstrap";
-import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
-import { TbInfoSquareRoundedFilled } from "react-icons/tb";
 import "./index.scss";
 
 // Icones
+import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
 import { FaFilter } from "react-icons/fa";
 import { FcInfo } from "react-icons/fc";
-import { useEffect, useState } from "react";
-import { Department, QueryResponse } from "./types";
-import { HttpRequestsDepartmentImpl } from "./services/http.request";
+import { TbInfoSquareRoundedFilled } from "react-icons/tb";
+
+// Components
 import FiltersDepartment from "./components/filters";
 import NewDepartment from "./components/newDepartment";
+
+import { Department, QueryResponse } from "./services/types";
+import { HttpRequestsDepartmentImpl } from "./services/http.request";
 import { StorageServiceImpl } from "../../../services/storage";
 
-const Department = () => {
+const DepartmentComp = () => {
   const storage = new StorageServiceImpl();
   const httpRequest = new HttpRequestsDepartmentImpl();
   const [messageApi, contextHolder] = message.useMessage();
@@ -100,30 +103,6 @@ const Department = () => {
     }
   };
 
-  const getDepartments = async (
-    filters: { name: string; status: string },
-    resetPage: boolean = false
-  ) => {
-    const pagination = {
-      page: resetPage ? 1 : dataSource.meta.page,
-      perPage: dataSource.meta.perPage,
-    };
-    const query = {
-      ...filters,
-      ...pagination,
-    };
-
-    await httpRequest
-      .findAllWithFilters(query)
-      .then((res) => {
-        setDataSource(res);
-      })
-      .catch((reason) => {
-        messageApi.error("Erro ao buscar os departamentos 🥺");
-        console.error(reason);
-      });
-  };
-
   const handleFilters = () => {
     setShowFilters(!showFilters);
   };
@@ -153,7 +132,45 @@ const Department = () => {
       setFilters({});
       getDepartments(filters, true);
     }
+    getEmployees();
   }, []);
+
+  const getDepartments = async (
+    filters: { name: string; status: string },
+    resetPage: boolean = false
+  ) => {
+    const pagination = {
+      page: resetPage ? 1 : dataSource.meta.page,
+      perPage: dataSource.meta.perPage,
+    };
+    const query = {
+      ...filters,
+      ...pagination,
+    };
+
+    await httpRequest
+      .findAllWithFilters(query)
+      .then((res) => {
+        setDataSource(res);
+      })
+      .catch((reason) => {
+        messageApi.error("Erro ao buscar os departamentos 🥺");
+        console.error(reason);
+      });
+  };
+
+  const getEmployees = async () => {
+    await httpRequest
+      .findEmployeesCompany()
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((reason) => {
+        messageApi.error("Erro ao buscar os departamentos 🥺");
+        console.error(reason);
+      });
+  };
+
   return (
     <>
       {contextHolder}
@@ -245,4 +262,4 @@ const Department = () => {
     </>
   );
 };
-export default Department;
+export default DepartmentComp;

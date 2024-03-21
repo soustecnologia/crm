@@ -3,12 +3,11 @@ import { Form, Input, Spin, message } from "antd";
 import { IoPerson, IoLockClosed } from "react-icons/io5";
 
 import "./index.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoginServiceImpl } from "../../services/login";
 import { StorageServiceImpl } from "../../../../services/storage";
 
 const FormLogin = () => {
-  localStorage.clear();
   const navigate = useNavigate();
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
@@ -42,6 +41,10 @@ const FormLogin = () => {
         setLoading(false);
       });
   };
+
+  useEffect(() => {
+    storage.deleteData("token");
+  }, []);
 
   return (
     <>

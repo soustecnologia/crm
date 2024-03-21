@@ -1,3 +1,5 @@
+import { Employee } from "../../../../../shared/types";
+
 export type Department = {
   id: string;
   name: string;
@@ -29,4 +31,5 @@ export type QueryResponse = {
 
 export interface HttpRequestsDepartment {
   findAllWithFilters(filters: Filters): Promise<QueryResponse>;
+  findEmployeesCompany(): Promise<Employee[]>;
 }

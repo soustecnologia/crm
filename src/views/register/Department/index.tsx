@@ -25,6 +25,9 @@ const DepartmentComp = () => {
   const [filters, setFilters] = useState<any>({});
   const [showFilters, setShowFilters] = useState(false);
   const [showNewDepartment, setShowNewDepartment] = useState(false);
+  const [departmentEdit, setDepartmentEdit] = useState<Department>();
+  const [editing, setEditing] = useState<boolean>(false);
+
   const [dataSource, setDataSource] = useState<QueryResponse>({
     departments: [],
     meta: {
@@ -68,7 +71,7 @@ const DepartmentComp = () => {
         <Tooltip title="Sobre o departamento" color={"var(--primary-color)"}>
           <FcInfo
             style={{ cursor: "pointer", fontSize: "19px" }}
-            onClick={() => aboutDepartment(record)}
+            onClick={() => handleNewDepartment(record, true)}
           />
         </Tooltip>
       ),
@@ -91,10 +94,6 @@ const DepartmentComp = () => {
     await getDepartments(filters);
   };
 
-  const aboutDepartment = (record: any) => {
-    console.log(record);
-  };
-
   const qtdSelectedMsg = (qtd: number) => {
     if (qtd > 1) {
       return `${qtd} Selecionados`;
@@ -107,8 +106,21 @@ const DepartmentComp = () => {
     setShowFilters(!showFilters);
   };
 
-  const handleNewDepartment = () => {
+  const handleNewDepartment = (
+    department?: Department,
+    isEditing: boolean = false
+  ) => {
+    if (isEditing) {
+      setDepartmentEdit(department);
+      setEditing(true);
+    } else {
+      setDepartmentEdit(undefined);
+      setEditing(false);
+    }
     setShowNewDepartment(!showNewDepartment);
+    // console.log(departmentEdit);
+    // console.log(department);
+    // console.log(isEditing);
   };
 
   const applyFilters = (applyFilter: { status: string; name: string }) => {
@@ -122,18 +134,6 @@ const DepartmentComp = () => {
     handleFilters();
     getDepartments(applyFilter, true);
   };
-
-  useEffect(() => {
-    const contain_filters = storage.getData("filters_department");
-    if (contain_filters) {
-      setFilters(contain_filters);
-      getDepartments(contain_filters, true);
-    } else {
-      setFilters({});
-      getDepartments(filters, true);
-    }
-    getEmployees();
-  }, []);
 
   const getDepartments = async (
     filters: { name: string; status: string },
@@ -159,17 +159,16 @@ const DepartmentComp = () => {
       });
   };
 
-  const getEmployees = async () => {
-    await httpRequest
-      .findEmployeesCompany()
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((reason) => {
-        messageApi.error("Erro ao buscar os departamentos 🥺");
-        console.error(reason);
-      });
-  };
+  useEffect(() => {
+    const contain_filters = storage.getData("filters_department");
+    if (contain_filters) {
+      setFilters(contain_filters);
+      getDepartments(contain_filters, true);
+    } else {
+      setFilters({});
+      getDepartments(filters, true);
+    }
+  }, []);
 
   return (
     <>
@@ -183,6 +182,8 @@ const DepartmentComp = () => {
       <NewDepartment
         show={showNewDepartment}
         handleClose={handleNewDepartment}
+        isEditing={editing}
+        department={departmentEdit}
       />
       <Container style={{ position: "relative" }} fluid="lg">
         <div className="actions">
@@ -197,7 +198,7 @@ const DepartmentComp = () => {
             <div className="actions">
               <button
                 className="btn-default-size btn-standard"
-                onClick={handleNewDepartment}
+                onClick={() => handleNewDepartment()}
               >
                 Criar novo
               </button>

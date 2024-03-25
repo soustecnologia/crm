@@ -1,44 +1,32 @@
-import { useNavigate } from "react-router-dom";
 import { Form, Input, Spin, message } from "antd";
 
 import "./index.scss";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { LoginServiceImpl } from "../../services/login";
-import { StorageServiceImpl } from "../../../../services/storage";
 
 const initialValue = {
   email: "",
-  password: "",
 };
 
-const FormLogin = ({ setFormActive }: any) => {
+const FormRecovery = ({ setFormActive }: any) => {
   // Estados
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
 
   // Hooks
   const [form] = Form.useForm();
-  const navigate = useNavigate();
 
   // Services
   const auth = new LoginServiceImpl();
-  const storage = new StorageServiceImpl();
 
-  const onFinish = async (data: { email: string; password: string }) => {
+  const onFinish = async ({ email }: { email: string }) => {
     setLoading(true);
     await auth
-      .validateUser(data)
-      .then((res) => {
-        const { token, ...user } = res;
-        const setedUser = storage.setData("user", user);
-        const setedToken = storage.setData("token", token);
-        if (setedUser && setedToken) {
-          messageApi.success("Bom trabalho 😄");
-          navigate("/dashboard");
-        } else {
-          messageApi.error("Erro ao efetuar Login 🥺");
-        }
+      .recoveryPassword(email)
+      .then(() => {
+        messageApi.success("Verifique seu e-mail com a nova senha 😄");
         setLoading(false);
+        setFormActive("Login");
       })
       .catch((reason) => {
         const error = reason.response?.data;
@@ -52,10 +40,6 @@ const FormLogin = ({ setFormActive }: any) => {
       });
   };
 
-  useEffect(() => {
-    storage.deleteData("token");
-  }, []);
-
   return (
     <>
       {contextHolder}
@@ -67,7 +51,7 @@ const FormLogin = ({ setFormActive }: any) => {
         layout="vertical"
       >
         <div className="title-form">
-          <h2>Login</h2>
+          <h2>Redefinir Senha</h2>
         </div>
 
         <Form.Item
@@ -86,27 +70,12 @@ const FormLogin = ({ setFormActive }: any) => {
           />
         </Form.Item>
 
-        <Form.Item
-          label="Senha"
-          name="password"
-          rules={[{ required: true, message: "Informe a senha!" }]}
-          className="input-form"
-        >
-          <Input.Password
-            prefix={
-              <span className="material-symbols-rounded icon-form">lock</span>
-            }
-            style={{ padding: "8px 15px" }}
-            placeholder="********"
-          />
-        </Form.Item>
-
         <Form.Item className="button">
           {!loading ? (
-            <button className="button-enter">Entrar</button>
+            <button className="button-enter">Redefinir</button>
           ) : (
             <div className="info-enter">
-              <span>Entrando</span>
+              <span>Solicitando</span>
               <Spin size="small" />
             </div>
           )}
@@ -114,14 +83,14 @@ const FormLogin = ({ setFormActive }: any) => {
 
         <button
           className="btn-recovery"
-          onClick={() => setFormActive("Recovery")}
+          onClick={() => setFormActive("Login")}
           type="button"
         >
-          Esqueci minha senha 🫣
+          Voltar para o Login 😝
         </button>
       </Form>
     </>
   );
 };
 
-export default FormLogin;
+export default FormRecovery;

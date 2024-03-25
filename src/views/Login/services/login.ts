@@ -24,4 +24,14 @@ export class LoginServiceImpl implements LoginService {
       throw error;
     }
   }
+
+  async recoveryPassword(email: string): Promise<any> {
+    try {
+      const response = await this.http.post("/auth/recovery-password", email);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 }

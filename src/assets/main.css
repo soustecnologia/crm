@@ -1,6 +1,5 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 @import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
-@import "./buttons/index.css";
 
 :root {
   --bg-color: #fbfbfb;
@@ -14,10 +13,14 @@
   --icon-color: #858c94;
 }
 * {
-  font-family: "Nunito", sans-serif;
+  font-family: "Nunito";
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+}
+
+.material-symbols-rounded {
+  font-variation-settings: "FILL" 0, "wght" 200, "GRAD" 200, "opsz" 20;
 }
 body {
   background-color: var(--bg-color);

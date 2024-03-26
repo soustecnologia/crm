@@ -22,11 +22,14 @@ const FormRecovery = ({ setFormActive }: any) => {
   const onFinish = async ({ email }: { email: string }) => {
     setLoading(true);
     await auth
-      .recoveryPassword(email)
-      .then(() => {
-        messageApi.success("Verifique seu e-mail com a nova senha 😄");
+      .recoveryPassword({ email })
+      .then((res) => {
+        if (res.status) {
+          messageApi.success(res.message + " 😄");
+        } else {
+          messageApi.error(res.message + " 🥲");
+        }
         setLoading(false);
-        setFormActive("Login");
       })
       .catch((reason) => {
         const error = reason.response?.data;

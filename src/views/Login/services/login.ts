@@ -25,7 +25,7 @@ export class LoginServiceImpl implements LoginService {
     }
   }
 
-  async recoveryPassword(email: string): Promise<any> {
+  async recoveryPassword(email: { email: string }): Promise<any> {
     try {
       const response = await this.http.post("/auth/recovery-password", email);
       return response.data;

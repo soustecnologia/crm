@@ -4,11 +4,14 @@
 :root {
   --bg-color: #fbfbfb;
 
-  --primary-color: #039dea;
-  --secondary-color: #aa00ff;
+  --mantarini-1: #ffa500;
+  --mantarini-2: #ffd700;
+  --mantarini-3: #8db600;
+  --mantarini-4: #ffffff;
+  --mantarini-5: #87ceeb;
 
+  --text-dark: #323232;
   --text-light: #ffffff;
-  --text-dark: #172b4d;
 
   --icon-color: #858c94;
 }
